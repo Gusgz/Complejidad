@@ -1,3 +1,4 @@
+import ejemplo as e
 class DadoView:
 
     def __init__(self,dado):
@@ -20,4 +21,5 @@ class DadoView:
                     cadena += "║"
             cadena += "\n"
         cadena += "╚═══╩═══╩═══╝\n"
+        cadena += "SUMAAA" +str(e.Ejemplo().suma())
         print(cadena)

@@ -6,6 +6,8 @@ class DadoController:
     def __init__(self,dado):
         self.dado = dado
         self.view = dv.DadoView(self.dado)
+        self.generar_figuras()
+        self.unir_figuras()
 
     # ESTA FUNCIÓN SE DEBE USAR EN OTRA CLASE GENERAL
     def rotar_matriz(self,matriz):
