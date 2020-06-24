@@ -1,11 +1,10 @@
-import ejemplo as e
 class DadoView:
 
     def __init__(self,dado):
         self.dado = dado
 
     def visualizar_figuras(self):
-        div = self.dado.columnas//self.dado.n
+        div = self.dado.columnas//self.dado.cantidad
         cadena = ""
         cadena += "╔═══╦═══╦═══╗\n"
         cadena += "║A  ║B  ║C  ║\n"
@@ -21,5 +20,4 @@ class DadoView:
                     cadena += "║"
             cadena += "\n"
         cadena += "╚═══╩═══╩═══╝\n"
-        cadena += "SUMAAA" +str(e.Ejemplo().suma())
         print(cadena)
