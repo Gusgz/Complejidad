@@ -10,6 +10,12 @@ import controller.EscenarioController as ec
 # JUGADOR
 import model.Jugador as j
 import controller.JugadorController as jc
+# GEMA
+import model.Gemas as g
+# TABLERO
+import controller.TableroController as tc
+# GRAFO
+import model.Grafo as gra
 # OTROS
 from os import system
 from os import sys
@@ -95,6 +101,45 @@ def fase_juego(participantes):
     esc_ctlr.insertar_figura(x,y,dado_ctlr.dado.figuras[2])
     esc_ctlr.view.visualizar_escenario()
 
+def generar_tablero():
+    tabl_ctlr = tc.TableroController(3,3)
+    colores = ["RO","AZ","VE","AM","NA","MO","RO","AZ","VE","AM","NA","MO"]
+    tabl_ctlr.generar_gemas(colores)
+    tabl_ctlr.generar_conexiones()
+    tabl_ctlr.grafo.ver_grafo()
+
+def prueba_grafo():
+    grafo = gra.Grafo()
+    colores = ["R","G","B"]
+    id_gema = 0
+    # VÉRTICES
+    for i in range(3):
+        aux = colores[:]
+        for j in range(3):
+            color = random.choice(aux)
+            gema = Gema(id_gema,color)
+            grafo.agregar_vertice(gema)
+            aux.remove(color)
+            id_gema += 1
+    # ARISTAS
+    filas = 3
+    columnas = 3
+    div = len(grafo.vertices)//3
+    for i in range(filas):
+        for j in range(columnas):
+            if j == 0:
+                inicio(i+j,div,grafo)
+            if j > 0 and j < columnas - 1:
+                medio(div*(i-1)+j-1,div,grafo)
+            if j == columnas-1:
+                final(div*(i-1)+j-1,div,grafo)
+    grafo.ver_vertices()
+    grafo.imprimir_grafo()
+
+
 if __name__ == "__main__":
-    participantes = fase_datos()
-    fase_juego(participantes)
+    #participantes = fase_datos()
+    #fase_juego(participantes)
+    #prueba_grafo()
+    generar_tablero()
+    
