@@ -14,6 +14,8 @@ import controller.JugadorController as jc
 import model.Gemas as g
 # TABLERO
 import controller.TableroController as tc
+# INTERFAZ
+import model.Interfaz as modelInterfaz
 # GRAFO
 import model.Grafo as gra
 # OTROS
@@ -21,6 +23,7 @@ from os import system
 from os import sys
 import time as time
 import random as random
+import tkinter as tk
 
 def menu(n):
     cadena =  "╔═╦════════════════════╗\n"
@@ -141,5 +144,36 @@ if __name__ == "__main__":
     #participantes = fase_datos()
     #fase_juego(participantes)
     #prueba_grafo()
-    generar_tablero()
+    #generar_tablero()
+    #---
+    figuras = []
+    n = 0
+    for i in range(3):
+        fig_model = f.Figura(3,3,0,1)
+        fig_ctlr = fc.FiguraController(fig_model)
+        fig_ctlr.generar(i+1)
+        figuras.append(fig_model)
+        n += 1
+    dado_model = d.Dado(n,figuras,3,9)
+    dado_ctlr = dc.DadoController(dado_model)
+    esc_model = e.Escenario(6,6,0,1)
+    esc_ctlr = ec.EscenarioController(esc_model)
+    esc_ctlr.generar_escenario(1)
+    #---
+    root = tk.Tk()
+    root.geometry("500x500")
+    root.title("Ubongo")
+    interfaz = modelInterfaz.Interfaz(root)
+    matriz = dado_ctlr.dado.figuras[0].matriz
+    interfaz.generar_figura(0,0,matriz,"blue")
+    matriz2 = dado_ctlr.dado.figuras[1].matriz
+    interfaz.generar_figura(0,1,matriz2,"red")
+    matriz3 = dado_ctlr.dado.figuras[2].matriz
+    interfaz.generar_figura(0,2,matriz3,"green")
+
+    matrizTablero = esc_ctlr.model.matriz
+    interfaz.generar_tablero(1,0,matrizTablero,"red")
+    esc_ctlr.view.visualizar_escenario()
+    root.mainloop()
+
     

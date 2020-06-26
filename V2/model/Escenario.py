@@ -4,7 +4,7 @@ class Escenario:
         self.columnas = columnas
         self.valor_vacio = valor_vacio
         self.valor_ocupado = valor_ocupado
-        self.matriz = [[" "]*self.filas for i in range(self.columnas)]
+        self.matriz = [[valor_vacio]*self.filas for i in range(self.columnas)]
 
     def insertar_figura(self,x,y,figura):
         m = figura.get_matriz()
