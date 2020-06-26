@@ -33,8 +33,10 @@ def fase_interfaz():
     interfazController.view.dibujar_figura(0,0,figuras[0].model.matriz,"white",figuras[0].model.color)
     interfazController.view.dibujar_figura(0,1,figuras[1].model.matriz,"white",figuras[1].model.color)
     interfazController.view.dibujar_figura(0,2,figuras[2].model.matriz,"white",figuras[2].model.color)
-    # interfaz - insertar figuras
-    
+    # interfaz - menu juego
+    interfazController.view.dibujar_menu_juego(figuras)
+
+    # interfaz - mainloop
     interfazController.run()
     # ___
 
