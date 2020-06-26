@@ -13,46 +13,62 @@ class DadoController:
             self.model.figuras.append(figuraController)
 
     def lanzar_dado(self):
-        self.model.id = 1
+        self.model.id = 2
         self.model.escenarioId = 1
         #self.id = random.randint(1,6)
         if self.model.escenarioId == 1:
+            #id por cara de dado
             if self.model.id == 1:
                 self.model.figuras[0].generar(1)
                 self.model.figuras[1].generar(2)
                 self.model.figuras[2].generar(3)
             if self.model.id == 2:
-                # AYUDA AQUI AMIGO
-                # FIJATE DE LA PLANTILLA DE UBONGO
-                # HAY 2 MODELOS DE TARJETAS
-                # ESTE DE AQUI ES PARA EL MODELO 1
-                # AL LANZAR EL DADO SE VA A GENERAR UN ID 
-                # PARA CADA ID SE VA A GENERAR LAS FIGURAS DE LA PLANTILLA 1
-                # EL ID DEL DADO VA DE 1 A 6
-                pass
+                self.model.figuras[0].generar(3)
+                self.model.figuras[1].generar(4)
+                self.model.figuras[2].generar(5)
             if self.model.id == 3:
-                pass
+                self.model.figuras[0].generar(6)
+                self.model.figuras[1].generar(2)
+                self.model.figuras[2].generar(4)
             if self.model.id == 4:
-                pass
+                self.model.figuras[0].generar(4)
+                self.model.figuras[1].generar(7)
+                self.model.figuras[2].generar(8)
             if self.model.id == 5:
-                pass
+                self.model.figuras[0].generar(4)
+                self.model.figuras[1].generar(3)
+                self.model.figuras[2].generar(2)
             if self.model.id == 6:
-                pass
-            pass
+                self.model.figuras[0].generar(3)
+                self.model.figuras[1].generar(4)
+                self.model.figuras[2].generar(5)
+              
         if self.model.escenarioId == 2:
             if self.model.id == 1:
-                pass
+                self.model.figuras[0].generar(5)
+                self.model.figuras[1].generar(4)
+                self.model.figuras[2].generar(3)
             if self.model.id == 2:
-                pass
+                self.model.figuras[0].generar(9)
+                self.model.figuras[1].generar(6)
+                self.model.figuras[2].generar(7)
             if self.model.id == 3:
-                pass
+                self.model.figuras[0].generar(6)
+                self.model.figuras[1].generar(5)
+                self.model.figuras[2].generar(4)
             if self.model.id == 4:
-                pass
+                self.model.figuras[0].generar(8)
+                self.model.figuras[1].generar(6)
+                self.model.figuras[2].generar(2)
             if self.model.id == 5:
-                pass
+                self.model.figuras[0].generar(6)
+                self.model.figuras[1].generar(2)
+                self.model.figuras[2].generar(4)
             if self.model.id == 6:
-                pass
-            pass
+                self.model.figuras[0].generar(4)
+                self.model.figuras[1].generar(7)
+                self.model.figuras[2].generar(8)
+
     
     def generar_figuras(self):
         pass
