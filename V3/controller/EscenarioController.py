@@ -1,6 +1,7 @@
+import model.Escenario as Escenario
 class EscenarioController:
-    def __init__(self,model):
-        self.model = model
+    def __init__(self):
+        self.model = Escenario.Escenario()
     
     def generar_escenario(self):
         if self.model.id == 1:
@@ -17,3 +18,4 @@ class EscenarioController:
                 [0,0,0,0],
                 [0,1,1,1]
             ]
+    

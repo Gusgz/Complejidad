@@ -1,5 +1,6 @@
 import tkinter as tkinter
 class Interfaz:
-    def __init__(self):
+    def __init__(self,escenario,figuras):
         self.root = tkinter.Tk()
-        self.figuras = []
+        self.escenario = escenario
+        self.figuras = figuras
