@@ -1,4 +1,5 @@
 import tkinter as tkinter
+import time
 class VentanaJuego:
     def __init__(self,root,escenario,figuras):
         self.id = 0 # ID DE LA FIGURA ACTUAL SELECCIONADA
@@ -65,14 +66,57 @@ class VentanaJuego:
         self.dibujar_figura(0,self.id,self.figuras[self.id].matriz,self.figuras[self.id].color)
 
     def opcion_insertar(self,x,y):
-        if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]) and self.id <= 2:
+        if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]) and self.id < 3:
             m, color = self.escenario.insertar_figura(x,y,self.figuras[self.id])
             self.dibujar_escenario_con_figura(m,color)
             self.id += 1
-            print(str(self.id))
-            if self.id == 1:
+            if self.id == 3:
                 self.finalizar()
 
+    def avanzar_coordenada(self,x,y):
+        nx = x + 1
+        ny = y
+        if nx > 3:
+            nx = 0
+            ny += 1
+        return nx,ny
+                
+
+    def insertar_figura_automatica(self,x,y):
+        cont = 0
+        for aux in range(100):
+            if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]):
+                #
+                print("insertó",self.id)
+                m, color = self.escenario.insertar_figura(x,y,self.figuras[self.id])
+                self.dibujar_escenario_con_figura(m,color)
+                time.sleep(3)
+                #
+                self.id += 1
+                if self.id > 3:
+                    self.id = 0
+                #
+                x,y = self.avanzar_coordenada(x,y)
+            else:
+                self.opcion_rotar()
+                cont += 1
+                if cont == 4:
+                    self.opcion_invertir()
+                    print("modo espejo...")
+                if cont == 8:
+                    print("nueva figura...")
+                    self.id += 1
+                    cont = 0
+            x,y = self.avanzar_coordenada(x,y)
+            if y == 4:
+                print("FAIL")
+                break
+        print("FIN DEL BUCLE")
+
+
+    def opcion_automatico(self):
+        self.id = 0
+        self.insertar_figura_automatica(0,0)
 
     def dibujar_menu_juego(self):
         fila = 4
@@ -99,4 +143,8 @@ class VentanaJuego:
         # OPCIÓN INSERTAR
         botonInsertar = tkinter.Button(self.root,text="INSERTAR",command=lambda:self.opcion_insertar(int(textoX.get()),int(textoY.get())))
         botonInsertar.grid(row=fila,column=2)
+        fila += 1
+        # AUTOMÁTICO
+        botonAutomatico = tkinter.Button(self.root,text="AUTOMATICO",command=self.opcion_automatico)
+        botonAutomatico.grid(row=fila,column=0,columnspan=3)
         fila += 1

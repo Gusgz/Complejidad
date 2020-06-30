@@ -2,6 +2,7 @@ import random as random
 class Escenario:
     def __init__(self):
         self.matriz = [[0]*4 for i in range(4)]
+        self.cache = []
 
     def generar(self):
         id = random.randint(1,2)

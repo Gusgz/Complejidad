@@ -1,10 +1,15 @@
 import model.Escenario as Escenario
 import model.Figura as Figura
 import model.Dado as Dado
-import model.Interfaz as Interfaz
 import model.Jugador as Jugador
+import model.VentanaJuego as VentanaJuego
+import model.VentanaUbongo as VentanaUbongo
+import model.Tablero as Tablero
+import Util.Dijkstra as Dijkstra
 import threading
 import tkinter as tkinter
+import math
+import heapq
 
 def generar_escenario():
     escenario = Escenario.Escenario()
@@ -82,12 +87,63 @@ def ventana_datos(root):
     botonListo.grid(row=fila,column=1)
     fila += 1
 
+def bellmanFord(G,start):
+    n = len(G)
+    d =[math.inf]*n
+    p =[None]*n
+    d[start]=0
+    # LA SOLUCIÓN SE VA A ENCONTRAR MAX HASTA V - 1
+    for _ in range(n-1):
+        # POR CADA VÉRTICE EN EL GRAFO
+        for u in range(n):
+          # POR CADA VALOR (V,W) EN EL GRAFO
+            for v,w in G[u]:
+              # SI LA DISTANCIA ACTUAL ES MENOR
+                if d[v]>d[u]+w:
+                    d[v]=d[u]+w
+                    p[v]=u
+        for u in range(n):
+            for v,w in G[u]:
+                if d[v]>d[u]+w:
+                    print("oh noo, ciclo negativo")
+                    return
+    return p, d
+
 def ventana_ubongo(root):
     # falta agregar win de parametro
     #cerrar_ventana(win)
-    root.deiconify()
-    a = tkinter.Button(root,text="Empezar juego",command=lambda:ventana_juego(root))
-    a.grid(row=0,column=0)
+    #root.deiconify()
+    ###
+    tablero = Tablero.Tablero()
+    tablero.generar_gemas()
+    lista = tablero.generar_conexiones()
+    #lista = tablero.grafo.generar_lista()
+    #tablero.grafo.imprimir_grafo()
+    G =[[(1,1),(2,2),(3,8)],
+    [(4,3)],
+    [(4,3),(5,8),(3,5)],
+    [(5,12)],
+    [(5,4)],
+    []]
+    p, d = bellmanFord(lista,0)
+    print(p)
+    print(d)
+    #tablero.grafo.imprimir_grafo()
+    '''
+    for v,w in lista[0]:
+        print(tablero.grafo.colores[v])
+        ####'''
+    #tablero.generar_conexiones()
+    #lista = tablero.grafo.obtener_lista_adyacencia()
+    #print(tablero.grafo.vertices)
+    #tablero.grafo.imprimir_grafo()
+    ubongo = VentanaUbongo.VentanaUbongo(root,tablero)
+    ubongo.dibujar_tablero()
+    ubongo.dibujar_jugadores()
+    ubongo.iniciar()
+
+    #a = tkinter.Button(root,text="Empezar juego",command=lambda:ventana_juego(root))
+    #a.grid(row=0,column=0)
 
 def ventana_juego(root):
     root.withdraw()
@@ -99,16 +155,23 @@ def run():
     root = tkinter.Tk()
     root.title("Ubongo")
     #ventana_datos(root)
-    ventana_ubongo(root)
-    root.mainloop()
+    #ventana_ubongo(root)
     #
-    '''escenario,figuras = init_juego()
-    interfaz = Interfaz.Interfaz(escenario,figuras)
+    escenario,figuras = init_juego()
+    interfaz = VentanaJuego.VentanaJuego(root,escenario,figuras)
     interfaz.dibujar_figuras()
     interfaz.dibujar_escenario()
     interfaz.dibujar_menu_juego()
-    interfaz.iniciar()'''
+    interfaz.iniciar()
 
 if __name__ == "__main__":
-    run()
+    #run()
+    def pr(n):
+        if n == 0:
+            return True
+        return pr(n-1)
     
+    if pr(3):
+        print(pr(3))
+    else:
+        print("false")
