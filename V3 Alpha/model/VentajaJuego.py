@@ -1,5 +1,5 @@
 import tkinter as tkinter
-class Interfaz:
+class VentanaJuego:
     def __init__(self,root,escenario,figuras):
         self.id = 0 # ID DE LA FIGURA ACTUAL SELECCIONADA
         self.root = root

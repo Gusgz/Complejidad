@@ -2,8 +2,9 @@ import model.Escenario as Escenario
 import model.Figura as Figura
 import model.Dado as Dado
 import model.Interfaz as Interfaz
+import model.Jugador as Jugador
 import threading
-import tkinter as tk
+import tkinter as tkinter
 
 def generar_escenario():
     escenario = Escenario.Escenario()
@@ -40,17 +41,65 @@ def juego(root):
     a.grid(row=0,column=4)
     interfaz.iniciar()
 
-def volver(win,root):
+def cerrar_ventana(root):
+    root.destroy()
+
+def agregar_jugador(nombre,posicion,jugadores):
+        jugador = Jugador.Jugador(nombre,posicion)
+        print(nombre,posicion)
+        jugadores.append(jugador)
+
+def ventana_datos(root):
+    root.withdraw()
+    win = tkinter.Toplevel()
+    jugadores = []
+    # JUGADOR - NOMBRE
+    fila = 0
+    etiquetaTitulo = tkinter.Label(win)
+    etiquetaTitulo["text"] = "INGRESE LOS JUGADORES"
+    etiquetaTitulo.grid(row=fila,column=0,columnspan=2)
+    fila += 1
+    # JUGADOR - NOMBRE
+    etiquetaNombre = tkinter.Label(win)
+    etiquetaNombre["text"] = "NOMBRE"
+    etiquetaNombre.grid(row=fila,column=0)
+    textoNombre = tkinter.Entry(win,font="Calibri 12")
+    textoNombre.grid(row=fila,column=1)
+    fila += 1
+    # JUGADOR - POSICIÓN
+    etiquetaPosicion = tkinter.Label(win)
+    etiquetaPosicion["text"] = "POSICION"
+    etiquetaPosicion.grid(row=fila,column=0)
+    textoPosicion = tkinter.Entry(win,font="Calibri 12")
+    textoPosicion.grid(row=fila,column=1)
+    fila += 1
+    # AGREGAR
+    botonAgregar = tkinter.Button(win,text="AGREGAR",command=lambda:agregar_jugador(textoNombre.get(),int(textoPosicion.get()),jugadores))
+    botonAgregar.grid(row=fila,column=1)
+    fila += 1
+    # LISTO
+    botonListo = tkinter.Button(win,text="LISTO",command=lambda:ventana_ubongo(root,win))
+    botonListo.grid(row=fila,column=1)
+    fila += 1
+
+def ventana_ubongo(root):
+    # falta agregar win de parametro
+    #cerrar_ventana(win)
     root.deiconify()
-    win.destroy()
+    a = tkinter.Button(root,text="Empezar juego",command=lambda:ventana_juego(root))
+    a.grid(row=0,column=0)
+
+def ventana_juego(root):
+    root.withdraw()
+    win = tkinter.Toplevel()
+    a = tkinter.Button(win,text="Juego terminado para jugador 1",command=lambda:ventana_ubongo(root,win))
+    a.grid(row=0,column=0)
 
 def run():
-
-    root = tk.Tk()
-    root.geometry("200x200")
-    root.title("UBONGO")
-    a = tk.Button(root,text="Este boton me lleva al juego",command=lambda:juego(root))
-    a.grid(row=0,column=0)
+    root = tkinter.Tk()
+    root.title("Ubongo")
+    #ventana_datos(root)
+    ventana_ubongo(root)
     root.mainloop()
     #
     '''escenario,figuras = init_juego()
