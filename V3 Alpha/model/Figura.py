@@ -1,10 +1,16 @@
 class Figura:
     def __init__(self):
+        self.id = 0
+        self.rotacion = 0
+        self.invertido = False
         self.bloques = 0
         self.color = ""
         self.matriz = [[0]*3 for i in range(3)]
     
     def generar(self,id):
+        self.id = id
+        self.rotacion = 0
+        self.invertido = False
         if id == 1:
             self.color = "gold"
             self.bloques = 4
@@ -86,7 +92,11 @@ class Figura:
             for c in range(len(self.matriz)):
                 m[f].append(self.matriz[len(self.matriz)-1-c][f])
         self.matriz = m
+        self.rotacion += 1
+        if self.rotacion == 4:
+            self.rotacion = 0
 
     def invertir(self):
         self.matriz = list(reversed(self.matriz))
+        self.invertido = not self.invertido
 

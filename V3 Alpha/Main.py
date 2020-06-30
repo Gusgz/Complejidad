@@ -13,8 +13,8 @@ import heapq
 
 def generar_escenario():
     escenario = Escenario.Escenario()
-    id = escenario.generar()
-    return id,escenario
+    escenario.generar()
+    return escenario
 
 def generar_figuras(id):
     figuras = []
@@ -29,9 +29,9 @@ def lanzar_dado(escenarioId,figuras):
     dado.lanzar(escenarioId,figuras)
 
 def init_juego():
-    escenarioId, escenario = generar_escenario()
-    figuras = generar_figuras(escenarioId)
-    lanzar_dado(escenarioId,figuras)
+    escenario = generar_escenario()
+    figuras = generar_figuras(escenario.id)
+    lanzar_dado(escenario.id,figuras)
     return escenario,figuras
 
 def juego(root):
@@ -165,13 +165,4 @@ def run():
     interfaz.iniciar()
 
 if __name__ == "__main__":
-    #run()
-    def pr(n):
-        if n == 0:
-            return True
-        return pr(n-1)
-    
-    if pr(3):
-        print(pr(3))
-    else:
-        print("false")
+    run()

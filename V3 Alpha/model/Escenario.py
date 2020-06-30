@@ -1,26 +1,42 @@
 import random as random
 class Escenario:
     def __init__(self):
+        self.id = 0
         self.matriz = [[0]*4 for i in range(4)]
-        self.cache = []
 
     def generar(self):
-        id = random.randint(1,2)
-        if id == 1:
+        #self.id = random.randint(1,2)
+        self.id = 1
+        if self.id == 1:
             self.matriz = [
                 [1,0,0,0],
                 [1,0,0,0],
                 [0,0,0,0],
                 [1,1,0,0]
             ]
-        if id == 2:
+        if self.id == 2:
             self.matriz = [
                 [0,0,0,1],
                 [0,0,0,0],
                 [0,0,0,0],
                 [0,1,1,1]
             ]
-        return id
+    
+    def generar_id(self):
+        if self.id == 1:
+            self.matriz = [
+                [1,0,0,0],
+                [1,0,0,0],
+                [0,0,0,0],
+                [1,1,0,0]
+            ]
+        if self.id == 2:
+            self.matriz = [
+                [0,0,0,1],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,1,1,1]
+            ]
     
     def insertar_figura(self,x,y,figura):
         m = [[0]*4 for i in range(4)]
@@ -33,8 +49,8 @@ class Escenario:
         return m, figura.color
     
     def esta_completo(self):
-        for i in range(3):
-            for j in range(3):
+        for i in range(4):
+            for j in range(4):
                 if self.matriz[j][i] == 0:
                     return False
         return True

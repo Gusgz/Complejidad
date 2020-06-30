@@ -5,7 +5,8 @@ class Dado:
         pass
 
     def lanzar(self,escenarioId,figuras):
-        id = random.randint(1,6)
+        #id = random.randint(1,6)
+        id = 1
         if escenarioId == 1:
             if id == 1:
                 aux = [1,2,3]

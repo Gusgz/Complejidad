@@ -1,11 +1,15 @@
 import tkinter as tkinter
 import time
+from os import system
 class VentanaJuego:
     def __init__(self,root,escenario,figuras):
         self.id = 0 # ID DE LA FIGURA ACTUAL SELECCIONADA
         self.root = root
         self.escenario = escenario
         self.figuras = figuras
+        self.matriz_original = self.escenario.matriz
+        self.memoria = []
+        self.cache_id = [0,1,2]
 
     def iniciar(self):
         self.root.mainloop()
@@ -81,7 +85,6 @@ class VentanaJuego:
             ny += 1
         return nx,ny
                 
-
     def insertar_figura_automatica(self,x,y):
         cont = 0
         for aux in range(100):
@@ -113,11 +116,143 @@ class VentanaJuego:
                 break
         print("FIN DEL BUCLE")
 
+    def ins_auto(self,x,y,nivel):
+        if self.id > 2:
+            self.id = 0
+        if self.escenario.esta_completo():
+            print("SI")
+            return True
+        if nivel == 0:
+            return False
+        for i in range(24):
+            ya_testeado = False
+            for i in range(len(self.lista)):
+                if self.lista[i].id == self.figuras[self.id].id and self.lista[i].estado == self.figuras[self.id].estado and self.lista[i].invertido == self.figuras[self.id].invertido and nivel == 3:
+                    ya_testeado = True
+            if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]) and ya_testeado == False:
+                if nivel == 36:
+                    print("guardando figura inicial del bucle...")
+                    self.lista.append(self.figuras[self.id])
+                    #self.lista.append(self.figuras[self.id].matriz)
+                m, color = self.escenario.insertar_figura(x,y,self.figuras[self.id])
+                self.dibujar_escenario_con_figura(m,color)
+                print("insertando figura",self.id)
+                time.sleep(2)
+                self.id += 1
+                break
+            else:
+                if i%8 == 0:
+                    self.id += 1
+                if i%4 == 0:
+                    if self.id > 2:
+                        self.id = 0
+                    self.opcion_invertir()
+                    self.figuras[self.id].invertido = True
+                if self.id > 2:
+                    self.id = 0
+                self.opcion_rotar()
+                self.figuras[self.id].estado += 1
+                if self.figuras[self.id].estado > 3:
+                    self.figuras[self.id].estado = 0
+        x,y = self.avanzar_coordenada(x,y)
+        return self.ins_auto(x,y,nivel-1)
+
+    # NUEVO
+    def buscar_en_memoria(self,id):
+        for i in range(len(self.memoria)):
+            if id == self.memoria[i]:
+                return True
+        return False
+
+    def siguiente_figura(self):
+        self.id += 1
+        if self.id > 2:
+            self.id = 0
+
+    def ins_figura_auto_V2(self,x,y,n):
+        #time.sleep(1)
+        #self.reiniciar_figuras()
+        #print("probrando insercción en coordenada",x,y)
+        for aux in range(3):
+            #print("\tFIGURA",self.id)
+            time.sleep(1)
+            for aux2 in range(2):
+                for i in range(4):
+                    #print("\t"+str(i))
+                    #time.sleep(1)
+                    if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]):
+                        #print("\t(+) insertando figura",self.id)
+                        m, color = self.escenario.insertar_figura(x,y,self.figuras[self.id])
+                        self.dibujar_escenario_con_figura(m,color)
+                        self.siguiente_figura()
+                        #time.sleep(1)
+                        return True # SE INSERTÓ LA FIGURA
+                    self.opcion_rotar()
+                    #time.sleep(1)
+                self.opcion_invertir()
+                #print("\tinvertir")
+            self.siguiente_figura()
+        return False # NO SE INSERTÓ LA FIGURA
+
+    def re_V2(self,x,y,n):
+        #print("FIGURAS POR INSERTAR",n,"/3")
+        if y == 4:
+            return False
+        if self.ins_figura_auto_V2(x,y,n):
+            n -= 1
+            if self.escenario.esta_completo():
+                return True
+        x += 1
+        if x > 3:
+            x = 0
+            y += 1
+        return self.re_V2(x,y,n)
+        
+    def reiniciar_escenario(self):
+        self.escenario.generar_id()
+
+    def reiniciar_figuras(self):
+        for i in range(3):
+            self.figuras[i].generar(self.figuras[i].id)
 
     def opcion_automatico(self):
         self.id = 0
-        self.insertar_figura_automatica(0,0)
+        intentos = 0
+        #system("cls")
+        while intentos < 10:
+            '''print("--------------------")
+            print("Intento(s)",intentos)'''
+            print(intentos)
+            if self.re_V2(0,0,3):
+                #print("bien")
+                #time.sleep(3)
+                return
+            self.reiniciar_escenario()
+            intentos += 1
+            '''print("--------------------")
+            system("cls")'''
+        #print("prueba finalizada")
+        
+        #time.sleep(3)
+        #self.escenario.generar_id()
+    
+    def func_bt(self,x,y):
+        pass
 
+    def opcion_automatico_bt(self):
+        self.id = 0
+        intentos = 0
+        while intentos < 10:
+            if self.func_bt(0,0):
+                print("solucionado")
+                return
+            self.escenario.generar_id()
+            intentos += 1
+        # BACKTRACKING
+
+
+    # NUEVO
+    
     def dibujar_menu_juego(self):
         fila = 4
         # SOLICITAR X
