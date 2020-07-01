@@ -11,6 +11,7 @@ import tkinter as tkinter
 import math
 import heapq
 
+jugadores = []
 def generar_escenario():
     escenario = Escenario.Escenario()
     escenario.generar()
@@ -49,21 +50,24 @@ def juego(root):
 def cerrar_ventana(root):
     root.destroy()
 
-def agregar_jugador(nombre,posicion,jugadores):
-        jugador = Jugador.Jugador(nombre,posicion)
-        print(nombre,posicion)
-        jugadores.append(jugador)
+def listar_jugadores(nombre,posicion):
+    global jugadores
+    jugador=Jugador.Jugador(nombre,posicion)
+    print(nombre,posicion) 
+    jugadores.append(jugador) 
 
 def ventana_datos(root):
+    #withdraw para cerrar
     root.withdraw()
+    #win para abrir la ventana
     win = tkinter.Toplevel()
-    jugadores = []
     # JUGADOR - NOMBRE
     fila = 0
     etiquetaTitulo = tkinter.Label(win)
     etiquetaTitulo["text"] = "INGRESE LOS JUGADORES"
     etiquetaTitulo.grid(row=fila,column=0,columnspan=2)
     fila += 1
+    
     # JUGADOR - NOMBRE
     etiquetaNombre = tkinter.Label(win)
     etiquetaNombre["text"] = "NOMBRE"
@@ -78,9 +82,11 @@ def ventana_datos(root):
     textoPosicion = tkinter.Entry(win,font="Calibri 12")
     textoPosicion.grid(row=fila,column=1)
     fila += 1
-    # AGREGAR
-    botonAgregar = tkinter.Button(win,text="AGREGAR",command=lambda:agregar_jugador(textoNombre.get(),int(textoPosicion.get()),jugadores))
+
+    # AGREGAR  
+    botonAgregar = tkinter.Button(win,text="AGREGAR",command=lambda:listar_jugadores(textoNombre.get(),int(textoPosicion.get())))
     botonAgregar.grid(row=fila,column=1)
+    
     fila += 1
     # LISTO
     botonListo = tkinter.Button(win,text="LISTO",command=lambda:ventana_ubongo(root,win))
@@ -109,10 +115,10 @@ def bellmanFord(G,start):
                     return
     return p, d
 
-def ventana_ubongo(root):
+def ventana_ubongo(root,win):
     # falta agregar win de parametro
-    #cerrar_ventana(win)
-    #root.deiconify()
+    cerrar_ventana(win)
+    root.deiconify()
     ###
     tablero = Tablero.Tablero()
     tablero.generar_gemas()
@@ -125,9 +131,9 @@ def ventana_ubongo(root):
     [(5,12)],
     [(5,4)],
     []]
-    p, d = bellmanFord(lista,0)
-    print(p)
-    print(d)
+    #p, d = bellmanFord(lista,0)
+    #print(p)
+    #print(d)
     #tablero.grafo.imprimir_grafo()
     '''
     for v,w in lista[0]:
@@ -139,7 +145,7 @@ def ventana_ubongo(root):
     #tablero.grafo.imprimir_grafo()
     ubongo = VentanaUbongo.VentanaUbongo(root,tablero)
     ubongo.dibujar_tablero()
-    ubongo.dibujar_jugadores()
+    ubongo.dibujar_jugadores(jugadores)
     ubongo.iniciar()
 
     #a = tkinter.Button(root,text="Empezar juego",command=lambda:ventana_juego(root))
@@ -154,15 +160,16 @@ def ventana_juego(root):
 def run():
     root = tkinter.Tk()
     root.title("Ubongo")
-    #ventana_datos(root)
+    ventana_datos(root)
     #ventana_ubongo(root)
     #
-    escenario,figuras = init_juego()
+    '''escenario,figuras = init_juego()
     interfaz = VentanaJuego.VentanaJuego(root,escenario,figuras)
     interfaz.dibujar_figuras()
     interfaz.dibujar_escenario()
     interfaz.dibujar_menu_juego()
-    interfaz.iniciar()
+    interfaz.iniciar()'''
+    root.mainloop()
 
 if __name__ == "__main__":
     run()

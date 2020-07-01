@@ -22,11 +22,9 @@ class VentanaUbongo:
         canvas.grid(row=0,column=0)
 
 
-    def dibujar_jugadores(self):
-        jugadores = ['A','B','C','D']
-        pos = [2,1,4,2]
-        for i in range(len(jugadores)):
-            lblNombre = tkinter.Label(self.root)
-            lblNombre["text"] = jugadores[i] + " " + str(pos[i])
+    def dibujar_jugadores(self,lista):
+        for i in range(2):
+            lblNombre=tkinter.Label(self.root)
+            lblNombre["text"]= lista[i].nombre + " " + str(lista[i].posicion)
             lblNombre.grid(row=i+1,column=0)
 
