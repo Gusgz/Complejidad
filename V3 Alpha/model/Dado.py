@@ -6,7 +6,7 @@ class Dado:
 
     def lanzar(self,escenarioId,figuras):
         #id = random.randint(1,6)
-        id = 1
+        id = 2
         if escenarioId == 1:
             if id == 1:
                 aux = [1,2,3]
@@ -29,7 +29,7 @@ class Dado:
                 for i in range(3):
                     figuras[i].generar(aux[i])
             if id == 6:
-                aux = [4,7,8]
+                aux = [7,4,8]
                 for i in range(3):
                     figuras[i].generar(aux[i])
         if escenarioId == 2:

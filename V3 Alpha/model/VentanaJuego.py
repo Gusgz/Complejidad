@@ -1,5 +1,6 @@
 import tkinter as tkinter
 import time
+import random
 from os import system
 class VentanaJuego:
     def __init__(self,root,escenario,figuras):
@@ -193,7 +194,7 @@ class VentanaJuego:
                 #print("\tinvertir")
             self.siguiente_figura()
         return False # NO SE INSERTÓ LA FIGURA
-
+    
     def re_V2(self,x,y,n):
         #print("FIGURAS POR INSERTAR",n,"/3")
         if y == 4:
@@ -215,7 +216,7 @@ class VentanaJuego:
         for i in range(3):
             self.figuras[i].generar(self.figuras[i].id)
 
-    def opcion_automatico(self):
+    def opcion_automatico_anterior(self):
         self.id = 0
         intentos = 0
         #system("cls")
@@ -236,19 +237,69 @@ class VentanaJuego:
         #time.sleep(3)
         #self.escenario.generar_id()
     
-    def func_bt(self,x,y):
-        pass
+    def buscar_en_memoria_bt(self,_id,_inv,_rot,_nivel):
+        for id,inv,rot,nivel in self.memoria:
+            if id == _id and inv == _inv and rot == _rot and nivel != _nivel:
+                return True
+        return False
 
-    def opcion_automatico_bt(self):
+    def buscar_en_memoria_bt_V2(self,matriz,n):
+        for i in range(len(self.memoria)):
+            if matriz == self.memoria[i] and n == 3:
+                return True
+        return False
+
+    def siguiente_figura_bt(self,lista,i):
+        if len(lista) != 0:
+            if i == len(lista):
+                i = 0
+            self.id = lista[i]
+
+    def ins_figura_para_bt(self,x,y):
+        for fig in range(3):
+            for inv in range(2):
+                for rot in range(4):
+                    if self.escenario.se_puede_insertar_figura(x,y,self.figuras[self.id]):
+                        m, color = self.escenario.insertar_figura(x,y,self.figuras[self.id])
+                        self.dibujar_escenario_con_figura(m,color)
+                        '''print("(+) insertando figura",self.id)
+                        time.sleep(1)'''
+                        self.siguiente_figura()
+                        return True
+                    self.figuras[self.id].rotar()
+                self.figuras[self.id].invertir()
+            self.siguiente_figura()
+        return False
+
+    def func_bt(self,x,y):
+        if y == 4:
+            return False
+        if self.ins_figura_para_bt(x,y):
+            if self.escenario.esta_completo():
+                return True
+        x,y = self.avanzar_coordenada(x,y)
+        #print("avanzar a coordenada",x,y)
+        #time.sleep(1)
+        return self.func_bt(x,y)
+
+
+
+    def opcion_automatico(self):
         self.id = 0
         intentos = 0
-        while intentos < 10:
+        while intentos < 10000:
+            system("cls")
+            print("intentos",intentos)
+            #print("nuevo intento..",intentos)
             if self.func_bt(0,0):
-                print("solucionado")
-                return
+                break
             self.escenario.generar_id()
+            self.figuras[0].rotar()
+            self.figuras[1].rotar()
+            self.figuras[2].rotar()
+            #self.reiniciar_figuras()
             intentos += 1
-        # BACKTRACKING
+        print("fin")
 
 
     # NUEVO

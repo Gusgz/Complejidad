@@ -70,3 +70,10 @@ class Escenario:
         if figura.matriz[0][0] == 1 and self.matriz[0][0] == 0:
             return True
         return False
+
+    def encontrar_prim_coord_vacia(self):
+        for i in range(4):
+            for j in range(4):
+                if self.matriz[j][i] == 0:
+                    return i,j
+        return 0,0
