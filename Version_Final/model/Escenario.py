@@ -7,7 +7,7 @@ class Escenario:
 
     def generar(self):
         #self.id = random.randint(1,2)
-        self.id = 1
+        #self.id = 1
         if self.id == 1:
             self.matriz = [
                 [1,0,0,0],

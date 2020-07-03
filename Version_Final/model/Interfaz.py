@@ -5,8 +5,10 @@ import model.Escenario as Escenario
 import model.Figura as Figura
 import model.Dado as Dado
 import tkinter as tk
+from tkinter import messagebox
 import random as rand
 import time
+import threading
 class Interfaz:
     def __init__(self):
         self.root = tk.Tk()
@@ -14,7 +16,6 @@ class Interfaz:
         self.canvas = InterfazCanvas.InterfazCanvas(self.root)
         self.juegos = 0
         self.id = 0
-        self.count = 0
 
     def init_win_datos(self):
         self.root.withdraw()
@@ -79,32 +80,35 @@ class Interfaz:
         btnJugar.grid(row=fila+1,column=0)
         pass
 
-    def init_puzzle(self):
-        def generar_escenario():
-            escenario = Escenario.Escenario()
-            escenario.generar()
-            return escenario
-        def generar_figuras(id):
-            figuras = []
-            for i in range(3):
-                figura = Figura.Figura()
-                figura.generar(id)
-                figuras.append(figura)
-            return figuras
-        def lanzar_dado(escenarioId,figuras):
-            dado = Dado.Dado()
-            dado.lanzar(escenarioId,figuras)
-        escenario = generar_escenario()
-        figuras = generar_figuras(escenario.id)
-        lanzar_dado(escenario.id,figuras)
-        return escenario,figuras
-
     def init_win_puzzle(self):
         if self.juegos <= 6:
             # --- VALORES INICIALES
             self.root.withdraw()
             win = tk.Toplevel()
-            escenario,figuras = self.init_puzzle()
+            # SE GENERAN LAS CLASES ESCENARIO, FIGURA Y DADO
+            escenario = Escenario.Escenario()
+            figuras = []
+            for i in range(3):
+                figura = Figura.Figura()
+                figuras.append(figura)
+            dado = Dado.Dado(escenario,figuras)
+            dado.lanzar()
+            def dibujar_escenario_figuras():
+                for i in range(3):
+                    figuras[i].dibujar(win,0,i)
+                escenario.dibujar(win)
+            dibujar_escenario_figuras()
+            def cronometro():
+                tiempo = time.perf_counter()
+                while tiempo < 30:
+                    #print(tiempo)
+                    tiempo = time.perf_counter() - tiempo
+                    pass
+                if not dado.escenario.esta_completo():
+                    messagebox.showerror(title='Tiempo acabo',message='No completaste el puzzle a tiempo!')
+                    win.destroy()
+            thread = threading.Thread(target=cronometro)
+            thread.start()
             # --- MÉTODOS PARA LAS OPCIONES
             def opcion_invertir():
                 figuras[self.id].invertir()
@@ -118,22 +122,17 @@ class Interfaz:
                     escenario.dibujar_con_figura(win,m,color)
                     self.id += 1
                     if self.id == 3:
+                        thread._stop()
                         self.id = 0
-                    self.count += 1
-                    if self.count == 3:
-                        for i in range(3):
-                            figuras[i].dibujar(win,0,i)
-                        escenario.dibujar(win)
-                    if self.count == 6:
-                        self.count = 0
+                        dado.lanzar()
+                        dibujar_escenario_figuras()
+                        messagebox.showinfo(title='Puzzle completado!',message='Tu turno ha finalizado')
                         win.destroy()
                 pass
             def opcion_reiniciar():
-                
-            #
-            for i in range(3):
-                figuras[i].dibujar(win,0,i)
-            escenario.dibujar(win)
+                dibujar_escenario_figuras()
+                self.id = 0
+                pass
             # --- SOLICITAR X
             fila = 4
             etiquetaX = tk.Label(win)

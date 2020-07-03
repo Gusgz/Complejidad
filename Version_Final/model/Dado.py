@@ -1,60 +1,64 @@
-import model.Figura as Figura
-import random as random
+import random as rand
 class Dado:
-    def __init__(self):
+    def __init__(self,escenario,figuras):
+        self.escenario = escenario
+        self.figuras = figuras 
         pass
 
-    def lanzar(self,escenarioId,figuras):
-        id = random.randint(1,6)
-        #id = 2
-        if escenarioId == 1:
+    def lanzar(self):
+        # GENERA EL ESCENARIO
+        self.escenario.id = rand.randint(1,2)
+        self.escenario.generar()
+        # GENERA LAS FIGURAS POR ESCENARIO
+        id = rand.randint(1,6)
+        if self.escenario.id == 1:
             if id == 1:
                 aux = [1,2,3]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 2:
                 aux = [4,7,8]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 3:
                 aux = [6,2,4]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 4:
                 aux = [1,2,3]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 5:
                 aux = [2,4,3]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 6:
                 aux = [4,7,8]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
-        if escenarioId == 2:
+                    self.figuras[i].generar(aux[i])
+        if self.escenario.id == 2:
             if id == 1:
                 aux = [8,6,2]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 2:
                 aux = [9,6,7]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 3:
                 aux = [4,7,8]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 4:
                 aux = [8,6,2]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 5:
                 aux = [2,6,4]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
             if id == 6:
                 aux = [4,7,8]
                 for i in range(3):
-                    figuras[i].generar(aux[i])
+                    self.figuras[i].generar(aux[i])
     
