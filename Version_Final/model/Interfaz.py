@@ -9,6 +9,7 @@ from tkinter import messagebox
 import random as rand
 import time
 import threading
+empezar = False
 class Interfaz:
     def __init__(self):
         self.root = tk.Tk()
@@ -80,11 +81,23 @@ class Interfaz:
         btnJugar.grid(row=fila+1,column=0)
         pass
 
-    def init_win_puzzle(self):
+    def init_win_puzzle(self,jugadorId):
+        global empezar
         if self.juegos <= 6:
             # --- VALORES INICIALES
             self.root.withdraw()
             win = tk.Toplevel()
+            def cronometro():
+                tiempo = 0
+                while tiempo < 30:
+                    tiempo += 1
+                    time.sleep(1)
+                    print("Tiempo restante",tiempo,"/ 30 seg")
+                    pass
+                if not dado.escenario.esta_completo():
+                    messagebox.showerror(title='Tiempo acabo',message='No completaste el puzzle a tiempo!')
+                    win.destroy()
+            thread = threading.Thread(target=cronometro)
             # SE GENERAN LAS CLASES ESCENARIO, FIGURA Y DADO
             escenario = Escenario.Escenario()
             figuras = []
@@ -95,20 +108,9 @@ class Interfaz:
             dado.lanzar()
             def dibujar_escenario_figuras():
                 for i in range(3):
-                    figuras[i].dibujar(win,0,i)
-                escenario.dibujar(win)
+                    dado.figuras[i].dibujar(win,0,i)
+                dado.escenario.dibujar(win)
             dibujar_escenario_figuras()
-            def cronometro():
-                tiempo = time.perf_counter()
-                while tiempo < 30:
-                    #print(tiempo)
-                    tiempo = time.perf_counter() - tiempo
-                    pass
-                if not dado.escenario.esta_completo():
-                    messagebox.showerror(title='Tiempo acabo',message='No completaste el puzzle a tiempo!')
-                    win.destroy()
-            thread = threading.Thread(target=cronometro)
-            thread.start()
             # --- MÉTODOS PARA LAS OPCIONES
             def opcion_invertir():
                 figuras[self.id].invertir()
@@ -117,7 +119,7 @@ class Interfaz:
                 figuras[self.id].rotar()
                 figuras[self.id].dibujar(win,0,self.id)
             def opcion_insertar(x,y):
-                if escenario.se_puede_insertar_figura(x,y,figuras[self.id]) and self.id < 3:
+                if escenario.se_puede_insertar_figura(x,y,figuras[self.id]) and self.id < 3 and empezar:
                     m,color = escenario.insertar_figura(x,y,figuras[self.id])
                     escenario.dibujar_con_figura(win,m,color)
                     self.id += 1
@@ -130,9 +132,28 @@ class Interfaz:
                         win.destroy()
                 pass
             def opcion_reiniciar():
+                if dado.escenario.id == 1:
+                    dado.escenario.matriz = [
+                        [1,0,0,0],
+                        [1,0,0,0],
+                        [0,0,0,0],
+                        [1,1,0,0]
+                    ]
+                if dado.escenario.id == 2:
+                    dado.escenario.matriz = [
+                        [0,0,0,1],
+                        [0,0,0,0],
+                        [0,0,0,0],
+                        [0,1,1,1]
+                    ]
                 dibujar_escenario_figuras()
                 self.id = 0
                 pass
+            def opcion_empezar():
+                global empezar
+                if empezar == False:
+                    empezar = True
+                    thread.start()
             # --- SOLICITAR X
             fila = 4
             etiquetaX = tk.Label(win)
@@ -160,9 +181,13 @@ class Interfaz:
             botonInsertar.grid(row=fila,column=2)
             fila += 1
             # --- OPCIÓN REINICIAR
-            start = time.perf_counter()
-            botonInsertar = tk.Button(win,text="REINICIAR",command=lambda:opcion_insertar(int(textoX.get()),int(textoY.get())))
-            botonInsertar.grid(row=fila,column=2)
+            btnReiniciar = tk.Button(win,text="REINICIAR",command=opcion_reiniciar)
+            btnReiniciar.grid(row=fila,column=2)
+            fila += 1
+            #
+            # --- OPCIÓN EMPEZAR
+            btnEmpezar = tk.Button(win,text="EMPEZAR",command=opcion_empezar)
+            btnEmpezar.grid(row=fila,column=2)
             fila += 1
             #
             self.juegos += 1

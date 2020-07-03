@@ -23,7 +23,8 @@ class Escenario:
                 [0,1,1,1]
             ]
     
-    def generar_id(self):
+    def generar_id(self,id):
+        self.id = id
         if self.id == 1:
             self.matriz = [
                 [1,0,0,0],
@@ -31,8 +32,20 @@ class Escenario:
                 [0,0,0,0],
                 [1,1,0,0]
             ]
+            self.matrizAUX = [
+                [1,0,0,0],
+                [1,0,0,0],
+                [0,0,0,0],
+                [1,1,0,0]
+            ]
         if self.id == 2:
             self.matriz = [
+                [0,0,0,1],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,1,1,1]
+            ]
+            self.matrizAUX = [
                 [0,0,0,1],
                 [0,0,0,0],
                 [0,0,0,0],

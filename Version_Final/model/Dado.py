@@ -2,7 +2,7 @@ import random as rand
 class Dado:
     def __init__(self,escenario,figuras):
         self.escenario = escenario
-        self.figuras = figuras 
+        self.figuras = figuras
         pass
 
     def lanzar(self):
