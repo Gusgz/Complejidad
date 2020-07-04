@@ -24,7 +24,7 @@ class Escenario:
             ]
     
     def generar_id(self,id):
-        self.id = id
+        self.id = 1
         if self.id == 1:
             self.matriz = [
                 [1,0,0,0],

@@ -4,5 +4,6 @@ class Jugador:
         self.posicion = 0
         self.puntos = 0
         self.bot = False
+        self.gemas = [" "]*5
 
 

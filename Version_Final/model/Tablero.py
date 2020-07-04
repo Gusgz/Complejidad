@@ -44,7 +44,7 @@ class Tablero:
                 canvas.create_oval(x,y,x+30,y+30, width=1, fill=self.grafo.colores[k+j])
         canvas.grid(row=0,column=0)
 
-    def dibujar_con_posicion(self,win,pos,pos2,juego):
+    def dibujar_con_posicion(self,win,jug,jug2,juego):
         canvas = tk.Canvas(win,width=30*6,height=30*3)
         for i in range(3):
             y = i*30
@@ -52,9 +52,11 @@ class Tablero:
             for j in range(6):
                 x = j*30
                 canvas.create_oval(x,y,x+30,y+30, width=1, fill=self.grafo.colores[k+j])
-                if juego == j and i == pos-1:
+                if juego == j and i == jug.posicion-1:
                     canvas.create_oval(x,y,x+30,y+30, width=1, fill='black')
-                if juego == j and i == pos2-1:
+                    jug.gemas.append(self.grafo.colores[k+j])
+                if juego == j and i == jug2.posicion-1:
                     canvas.create_oval(x,y,x+30,y+30, width=1, fill='white')
+                    jug2.gemas.append(self.grafo.colores[k+j])
         canvas.grid(row=0,column=0)
                 

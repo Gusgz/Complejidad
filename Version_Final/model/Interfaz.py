@@ -9,6 +9,7 @@ from tkinter import messagebox
 import random as rand
 import time
 import threading
+from os import system
 empezar = False
 tiempo = 0
 puntaje = 0
@@ -20,6 +21,7 @@ class Interfaz:
         self.jugadores = []
         self.canvas = InterfazCanvas.InterfazCanvas(self.root)
         self.id = 0
+        self.figuras = []
 
     def init_win_datos(self):
         self.root.withdraw()
@@ -85,10 +87,10 @@ class Interfaz:
         tablero.generar_conexiones()
         tablero.dibujar(frame2)
         # --- MÉTODOS DE POSICIONES
-        def mover(pos,pos2):
+        def mover(jug,jug2):
             global juegos
-            tablero.dibujar_con_posicion(frame2,pos,pos2,juegos)
-            #juegos+=1
+            tablero.dibujar_con_posicion(frame2,jug,jug2,juegos)
+            juegos+=1
             pass
         def actualizar_posicion():
             global juegos
@@ -97,7 +99,7 @@ class Interfaz:
                     self.jugadores[0].posicion += 1
                 if self.jugadores[0].posicion > 3:
                     self.jugadores[0].posicion = 0
-                mover(self.jugadores[0].posicion,self.jugadores[1].posicion)
+                mover(self.jugadores[0],self.jugadores[1])
         actualizar_posicion()
         # --- FRAME 1
         frame1 = tk.Frame(self.root)
@@ -134,6 +136,20 @@ class Interfaz:
         # --- BTN CAMBIAR POS 2
         btnSeleccionarPos2 = tk.Button(frame1,text="Cambiar",command=lambda:mover(1,3))
         btnSeleccionarPos2.grid(row=5,column=1,sticky="w")
+        # --- JUGADOR 1
+        cadena1 = ""
+        for i in range(5):
+            cadena1 += self.jugadores[0].gemas[i] + " "
+        lblJugador1Gemas = tk.Label(frame1,font="Calibri 8")
+        lblJugador1Gemas["text"] = cadena1
+        lblJugador1Gemas.grid(row=6,column=0,sticky="w")
+        # --- JUGADOR 2
+        cadena2 = ""
+        for i in range(5):
+            cadena2 += self.jugadores[1].gemas[i] + " "
+        lblJugador2Gemas = tk.Label(frame1,font="Calibri 8")
+        lblJugador2Gemas["text"] = cadena2
+        lblJugador2Gemas.grid(row=7,column=0,sticky="w")
         pass
 
     def init_win_puzzle(self,jugadorId):
@@ -142,6 +158,7 @@ class Interfaz:
         global jugador_id
         self.id = 0
         jugador_id = jugadorId
+        
         if juegos <= 12:
             # --- VALORES INICIALES
             self.root.withdraw()
@@ -150,7 +167,7 @@ class Interfaz:
                 global tiempo
                 global puntaje
                 tiempo = 0
-                while tiempo < 30:
+                while tiempo < 100:
                     tiempo += 1
                     time.sleep(1)
                     #print("Tiempo restante",tiempo,"/ 30 seg")
@@ -170,6 +187,7 @@ class Interfaz:
                 figuras.append(figura)
             dado = Dado.Dado(escenario,figuras)
             dado.lanzar()
+            self.figuras = dado.figuras
             def dibujar_escenario_figuras():
                 for i in range(3):
                     dado.figuras[i].dibujar(win,0,i)
@@ -183,6 +201,7 @@ class Interfaz:
                 figuras[self.id].rotar()
                 figuras[self.id].dibujar(win,0,self.id)
             def opcion_insertar(x,y):
+                global juegos
                 if escenario.se_puede_insertar_figura(x,y,figuras[self.id]) and self.id < 3 and empezar:
                     m,color = escenario.insertar_figura(x,y,figuras[self.id])
                     escenario.dibujar_con_figura(win,m,color)
@@ -191,7 +210,7 @@ class Interfaz:
                         self.id = 0
                         #messagebox.showinfo(title='Puzzle completado!',message='Tu turno ha finalizado')
                         result = messagebox.askquestion("Si = avanzar, No = retroceder")
-                        if result == "yes":
+                        if result != "no":
                             self.jugadores[jugador_id].posicion += 1
                             if self.jugadores[jugador_id].posicion > 3:
                                 self.jugadores[jugador_id].posicion = 0
@@ -227,6 +246,60 @@ class Interfaz:
                 if empezar == False:
                     empezar = True
                     thread.start()
+            def avanzar_coordenada(x,y):
+                nx = x + 1
+                ny = y
+                if nx > 3:
+                    nx = 0
+                    ny += 1
+                return nx,ny
+            def siguiente_figura():
+                self.id += 1
+                if self.id > 2:
+                    self.id = 0
+            def ins_figura_para_bt(x,y):
+                for fig in range(3):
+                    for inv in range(2):
+                        for rot in range(4):
+                            if dado.escenario.se_puede_insertar_figura(x,y,dado.figuras[self.id]):
+                                m, color = dado.escenario.insertar_figura(x,y,dado.figuras[self.id])
+                                dado.escena100o.dibujar_con_figura(win,m,color)
+                                
+                                siguiente_figura()
+                                return True
+                            dado.figuras[self.id].rotar()
+                        dado.figuras[self.id].invertir()
+                    siguiente_figura()
+                return False
+
+            def func_bt(x,y):
+                if y == 4:
+                    return False
+                if ins_figura_para_100(x,y):
+                    if dado.escenario.esta_completo():
+                        return True
+                    
+                x,y = avanzar_coordenada(x,y)
+                #print("avanzar a coordenada",x,y)
+                #time.sleep(1)
+                return func_bt(x,y)
+
+            def opcion_automatico():
+                self.id = 0
+                intentos = 0
+                while intentos < 10000:
+                    system("cls")
+                    print("intentos",intentos)
+                    #print("nuevo intento..",intentos)
+                    if func_bt(0,0):
+                        break
+                    dado.escenario.generar_id(dado.escenario.id)
+                    dado.figuras[0].rotar()
+                    dado.figuras[1].rotar()
+                    dado.figuras[2].rotar()
+                    #self.reiniciar_figuras()
+                    intentos += 1
+                print("fin")
             # --- SOLICITAR X
             fila = 4
             etiquetaX = tk.Label(win)
@@ -261,6 +334,11 @@ class Interfaz:
             # --- OPCIÓN EMPEZAR
             btnEmpezar = tk.Button(win,text="EMPEZAR",command=opcion_empezar)
             btnEmpezar.grid(row=fila,column=2)
+            fila += 1
+            #
+            # --- OPCIÓN AUTOMATICA
+            btnAutomatico = tk.Button(win,text="AUTOMATICO",command=opcion_automatico)
+            btnAutomatico.grid(row=fila,column=2)
             fila += 1
             #
             juegos += 1
