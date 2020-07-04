@@ -12,7 +12,7 @@ class Dado:
         self.escenario.generar()
         # GENERA LAS FIGURAS POR ESCENARIO
         #id = rand.randint(1,6)
-        id = 1
+        id = 2
         #id = 3 no
         #id = 1
         if self.escenario.id == 1:

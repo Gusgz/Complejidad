@@ -32,7 +32,7 @@ class Tablero:
                         self.grafo.agregar_arista(x+j,y,peso)
                         aristas.append((y,peso))
                 lista.append(aristas)
-        #return lista
+        return lista
 
     def dibujar(self,win):
         canvas = tk.Canvas(win,width=30*6,height=30*3)

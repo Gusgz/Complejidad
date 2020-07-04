@@ -10,6 +10,8 @@ import random as rand
 import time
 import threading
 from os import system
+import math
+import heapq
 empezar = False
 tiempo = 0
 puntaje = 0
@@ -75,17 +77,47 @@ class Interfaz:
         pass
 
     def init_win_tablero(self):
+        global juegos
         self.root.deiconify()
         self.root.geometry("800x600")
         # --- FRAME 2
         frame2 = tk.Frame(self.root)
-        frame2.place(x=240,y=20,width=200,height=200)
+        frame2.place(x=460,y=20,width=200,height=200)
         frame2.config(bg="lightblue")
+        # DIJSKTRA
+        def dijkstra(G, s):
+            n = len(G)
+            visited = [False]*n
+            weights = [math.inf]*n
+            path = [None]*n
+            queue = []
+            weights[s] = 0
+            heapq.heappush(queue, (0, s))
+            while len(queue) > 0:
+                g, u = heapq.heappop(queue)
+                visited[u] = True
+                for v, w in G[u]:
+                    if not visited[v]:
+                        f = g + w
+                        if f < weights[v]:
+                            weights[v] = f
+                            path[v] = u
+                            heapq.heappush(queue, (f, v))
+            return path, weights
         # --- TABLERO
         tablero = Tablero.Tablero()
         tablero.generar_gemas()
-        tablero.generar_conexiones()
+        lista = tablero.generar_conexiones()
+        p1,w1 = dijkstra(lista,0)
+        p2,w2 = dijkstra(lista,6)
+        p3,w3 = dijkstra(lista,12)
+        print(p1)
+        print(p2)
+        print(p3)
         tablero.dibujar(frame2)
+        lblJuegos = tk.Label(frame2)
+        lblJuegos["text"] = juegos
+        lblJuegos.grid(row=1,column=0,sticky="w")
         # --- MÉTODOS DE POSICIONES
         def mover(jug,jug2):
             global juegos
@@ -94,48 +126,55 @@ class Interfaz:
             pass
         def actualizar_posicion():
             global juegos
-            if juegos%2 == 0:
-                if self.jugadores[0].posicion == self.jugadores[1].posicion:
-                    self.jugadores[0].posicion += 1
-                if self.jugadores[0].posicion > 3:
-                    self.jugadores[0].posicion = 0
-                mover(self.jugadores[0],self.jugadores[1])
-        actualizar_posicion()
+            if self.jugadores[0].posicion == self.jugadores[1].posicion:
+                self.jugadores[0].posicion += 1
+            if self.jugadores[0].posicion > 3:
+                self.jugadores[0].posicion = 0
+            mover(self.jugadores[0],self.jugadores[1])
+        #actualizar_posicion()
+        # --- FRAME 3 JUGADOR 2
+        frame3 = tk.Frame(self.root)
+        frame3.place(x=240,y=20,width=200,height=200)
+        frame3.config(bg="lightblue")
+        # --- JUGADOR 2
+        lblNombre2 = tk.Label(frame3)
+        lblNombre2["text"] = self.jugadores[1].nombre
+        lblNombre2.grid(row=0,column=0,sticky="w")
+        lblPosicion2 = tk.Label(frame3)
+        lblPosicion2["text"] = str(self.jugadores[1].posicion)
+        lblPosicion2.grid(row=1,column=0,sticky="w")
+        lblPuntos2 = tk.Label(frame3)
+        lblPuntos2["text"] = str(self.jugadores[1].puntos)
+        lblPuntos2.grid(row=2,column=0,sticky="w")
+        # --- LBL SELECCIONAR POS 2
+        # --- BTN CAMBIAR POS 2
+        btnSeleccionarPos2 = tk.Button(frame3,text="Jugar",command=lambda:self.init_win_puzzle(1))
+        btnSeleccionarPos2.grid(row=3,column=0,columnspan=2,sticky="w")
         # --- FRAME 1
         frame1 = tk.Frame(self.root)
         frame1.place(x=20,y=20,width=200,height=200)
+        frame1.config(bg="lightblue")
         # --- LABEL JUGADORES
-        for i in range(len(self.jugadores)):
+        '''for i in range(len(self.jugadores)):
                 lblNombre = tk.Label(frame1)
                 lblNombre["text"] = self.jugadores[i].nombre + " pos:" + str(self.jugadores[i].posicion) +" pts:" + str(self.jugadores[i].puntos)
                 lblNombre.grid(row=i,column=0,sticky="w")
-                #lblNombre.place(x=20,y=20*(i*2+1))
-        # --- BTN JUGADOR 1
-        btnJugador1 = tk.Button(frame1,text="Jugar",command=lambda:self.init_win_puzzle(0))
-        btnJugador1.grid(row=0,column=1,sticky="w")
-        # --- BTN JUGADOR 1
-        btnJugador2 = tk.Button(frame1,text="Jugar",command=lambda:self.init_win_puzzle(1))
-        btnJugador2.grid(row=1,column=1,sticky="w")
+                #lblNombre.place(x=20,y=20*(i*2+1))'''
+        # --- JUGADOR 1
+        lblNombre1 = tk.Label(frame1)
+        lblNombre1["text"] = self.jugadores[0].nombre
+        lblNombre1.grid(row=0,column=0,sticky="w")
+        lblPosicion1 = tk.Label(frame1)
+        lblPosicion1["text"] = str(self.jugadores[0].posicion)
+        lblPosicion1.grid(row=1,column=0,sticky="w")
+        lblPuntos1 = tk.Label(frame1)
+        lblPuntos1["text"] = str(self.jugadores[0].puntos)
+        lblPuntos1.grid(row=2,column=0,sticky="w")
         # --- LBL SELECCIONAR POS
-        lblSeleccionarPos = tk.Label(frame1)
-        lblSeleccionarPos["text"] = "Jugador 1"
-        lblSeleccionarPos.grid(row=2,column=0,sticky="w")
-        # --- TXT POS
-        txtSeleccionarPos = tk.Entry(frame1,font="Calibri 8")
-        txtSeleccionarPos.grid(row=3,column=0,sticky="w")
         # --- BTN CAMBIAR POS
-        btnSeleccionarPos = tk.Button(frame1,text="Cambiar",command=lambda:mover(0,1))
-        btnSeleccionarPos.grid(row=3,column=1,sticky="w")
-        # --- LBL SELECCIONAR POS 2
-        lblSeleccionarPos2 = tk.Label(frame1)
-        lblSeleccionarPos2["text"] = "Jugador 2"
-        lblSeleccionarPos2.grid(row=4,column=0,sticky="w")
-        # --- TXT POS 2
-        txtSeleccionarPos2 = tk.Entry(frame1,font="Calibri 8")
-        txtSeleccionarPos2.grid(row=5,column=0,sticky="w")
-        # --- BTN CAMBIAR POS 2
-        btnSeleccionarPos2 = tk.Button(frame1,text="Cambiar",command=lambda:mover(1,3))
-        btnSeleccionarPos2.grid(row=5,column=1,sticky="w")
+        btnSeleccionarPos1 = tk.Button(frame1,text="Jugar",command=lambda:init_win_puzzle(0))
+        btnSeleccionarPos1.grid(row=3,column=0,columnspan=2,sticky="w")
+        
         # --- JUGADOR 1
         cadena1 = ""
         for i in range(5):
@@ -187,6 +226,7 @@ class Interfaz:
                 figuras.append(figura)
             dado = Dado.Dado(escenario,figuras)
             dado.lanzar()
+            #dado.figuras[0].rotar()
             self.figuras = dado.figuras
             def dibujar_escenario_figuras():
                 for i in range(3):
@@ -200,6 +240,8 @@ class Interfaz:
             def opcion_rotar():
                 figuras[self.id].rotar()
                 figuras[self.id].dibujar(win,0,self.id)
+                global juegos
+                juegos += 1
             def opcion_insertar(x,y):
                 global juegos
                 if escenario.se_puede_insertar_figura(x,y,figuras[self.id]) and self.id < 3 and empezar:
@@ -263,8 +305,7 @@ class Interfaz:
                         for rot in range(4):
                             if dado.escenario.se_puede_insertar_figura(x,y,dado.figuras[self.id]):
                                 m, color = dado.escenario.insertar_figura(x,y,dado.figuras[self.id])
-                                dado.escena100o.dibujar_con_figura(win,m,color)
-                                
+                                dado.escenario.dibujar_con_figura(win,m,color)
                                 siguiente_figura()
                                 return True
                             dado.figuras[self.id].rotar()
@@ -275,7 +316,7 @@ class Interfaz:
             def func_bt(x,y):
                 if y == 4:
                     return False
-                if ins_figura_para_100(x,y):
+                if ins_figura_para_bt(x,y):
                     if dado.escenario.esta_completo():
                         return True
                     
@@ -300,6 +341,7 @@ class Interfaz:
                     #self.reiniciar_figuras()
                     intentos += 1
                 print("fin")
+            
             # --- SOLICITAR X
             fila = 4
             etiquetaX = tk.Label(win)
