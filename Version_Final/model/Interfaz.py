@@ -10,6 +10,7 @@ import random as rand
 import time
 import threading
 empezar = False
+tiempo = 0
 class Interfaz:
     def __init__(self):
         self.root = tk.Tk()
@@ -65,20 +66,23 @@ class Interfaz:
 
     def init_win_tablero(self):
         self.root.deiconify()
+        self.root.geometry("500x500")
+        # --- TABLERO
         tablero = Tablero.Tablero()
         tablero.generar_gemas()
         tablero.generar_conexiones()
-        self.canvas.tablero(tablero)
+        tablero.dibujar(self.root)
         #
-        fila = 0
         for i in range(len(self.jugadores)):
                 lblNombre = tk.Label(self.root)
-                lblNombre["text"] = self.jugadores[i].nombre + " " + str(self.jugadores[i].posicion)
-                lblNombre.grid(row=i+1,column=0)
-                fila = i+1
+                lblNombre["text"] = self.jugadores[i].nombre + " " + str(self.jugadores[i].puntos)
+                lblNombre.grid(row=i+1,column=1)
         #
-        btnJugar = tk.Button(self.root,text="Jugar",command=self.init_win_puzzle)
-        btnJugar.grid(row=fila+1,column=0)
+        btnJugador1 = tk.Button(self.root,text="Jugar",command=lambda:self.init_win_puzzle(0))
+        btnJugador1.grid(row=0,column=2)
+        #
+        btnJugador2 = tk.Button(self.root,text="Jugar",command=lambda:self.init_win_puzzle(1))
+        btnJugador2.grid(row=1,column=2)
         pass
 
     def init_win_puzzle(self,jugadorId):
@@ -88,15 +92,18 @@ class Interfaz:
             self.root.withdraw()
             win = tk.Toplevel()
             def cronometro():
+                global tiempo
                 tiempo = 0
                 while tiempo < 30:
                     tiempo += 1
                     time.sleep(1)
-                    print("Tiempo restante",tiempo,"/ 30 seg")
+                    #print("Tiempo restante",tiempo,"/ 30 seg")
                     pass
                 if not dado.escenario.esta_completo():
                     messagebox.showerror(title='Tiempo acabo',message='No completaste el puzzle a tiempo!')
+                    self.jugadores[jugadorId].puntos += tiempo
                     win.destroy()
+                    self.init_win_tablero()
             thread = threading.Thread(target=cronometro)
             # SE GENERAN LAS CLASES ESCENARIO, FIGURA Y DADO
             escenario = Escenario.Escenario()

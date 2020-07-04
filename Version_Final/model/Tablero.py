@@ -1,5 +1,6 @@
 import model.Grafo as Grafo
 import random as random
+import tkinter as tk
 class Tablero:
     def __init__(self):
         self.grafo = Grafo.Grafo()
@@ -33,5 +34,13 @@ class Tablero:
                 lista.append(aristas)
         #return lista
 
-
+    def dibujar(self,win):
+        canvas = tk.Canvas(win,width=30*6,height=30*3)
+        for i in range(3):
+            y = i*30
+            k = i*6
+            for j in range(6):
+                x = j*30
+                canvas.create_oval(x,y,x+30,y+30, width=1, fill=self.grafo.colores[k+j])
+        canvas.grid(row=0,column=0)
                 
