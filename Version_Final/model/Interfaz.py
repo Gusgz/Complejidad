@@ -27,13 +27,19 @@ class Interfaz:
             jugador = Jugador.Jugador()
             jugador.nombre = nombre
             jugador.posicion = posicion
-            self.jugadores.append(jugador)
+            if(len(self.jugadores)<2):
+              self.jugadores.append(jugador)
+            else:
+              messagebox.showerror(title='Limite de jugadores superado',message='No pueden haber mas de 2 jugadores!')
         def agregar_bot():
             jugador = Jugador.Jugador()
             jugador.nombre = "bot"
             jugador.posicion = rand.randint(1,3)
             jugador.bot = True
-            self.jugadores.append(jugador)
+            if(len(self.jugadores)<2):
+              self.jugadores.append(jugador)
+            else:
+              messagebox.showerror(title='Limite de jugadores superado',message='No pueden haber mas de 2 jugadores!')
         def siguiente():
             win.destroy()
             self.init_win_tablero()
